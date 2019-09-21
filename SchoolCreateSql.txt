@@ -1,0 +1,62 @@
+USE [DataReview]
+GO
+
+/****** Object:  Table [dbo].[Location]    Script Date: 9/21/2019 3:29:45 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Location](
+	[LocationID] [int] NOT NULL identity(1,1),
+	[Address] [varchar](20) NULL,
+	[City] [varchar](20) NULL,
+	[MedianHouseValue] [int] NULL,
+	[Zip] [varchar](5) NULL,
+	[DistrictId] [int] NULL,
+	[Active] [bit] not NULL DEFAULT 1,
+	[StartDate] [date] Not NULL DEFAULT getdate(),
+	[EndDate] [date] NULL
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[School](
+	[SchoolID] [int] NOT NULL identity(1,1),
+	[SchoolName] [varchar](3) NULL,
+	[SchoolGrade] [varchar](1) NULL,
+	[Active] [bit]  not NULL DEFAULT 1,
+    [DistrictId] [int] NULL,
+	[StartDate] [date] Not NULL DEFAULT getdate(),
+	[EndDate] [date] NULL
+)
+
+
+CREATE TABLE [dbo].[Faculty](
+	[FacultyID] [int] NOT NULL identity(1,1),
+	[FacultyName] [varchar](20) NULL,
+	[FacultyRole] [varchar](20) NULL,
+	[Active] [bit]  not NULL DEFAULT 1,
+    [SchoolName]	[varchar](3) null,
+	[StartDate] [date] Not NULL DEFAULT getdate(),
+	[EndDate] [date] NULL
+)
+
+
+--Query to get back the data
+
+Select b.address,b.city,b.medianHouseValue,b.zip,b.DistrictId,a.schoolName, a.schoolgrade,
+c.FacultyName, c.facultyrole, c.startdate from
+
+(select SchoolName, SchoolGrade, DistrictId
+from [dbo].[School]) a
+join 
+(Select [Address], City, MedianHouseValue, Zip, DistrictId from
+[dbo].[Location]) b
+on a.DistrictId = b.DistrictId
+join
+(Select FacultyName, FacultyRole, SchoolName, StartDate from [dbo].[Faculty]) c
+on a.SchoolName = c.SchoolName
+
+
+
